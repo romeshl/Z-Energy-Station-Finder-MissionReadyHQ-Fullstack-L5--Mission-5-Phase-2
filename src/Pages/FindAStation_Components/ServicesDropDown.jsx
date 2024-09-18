@@ -47,7 +47,7 @@ export default function ServiceDropdown({Services, selectedServices, setSelected
                                         {selectedServices.includes(service.code) &&
                                             <div className="text-xs border m-1 p-1 border-orange-900 rounded-md bg-orange-200 flex items-center gap-1 "
                                                 key={index}><p>{service.name}</p>
-                                                <button className="font-extrabold" onClick={() => { AddRemoveServiceCode(service.code) }}>x</button>
+                                                <button key={index} className="font-extrabold" onClick={() => { AddRemoveServiceCode(service.code) }}>x</button>
                                             </div>}
                                     </>)
                             })}
@@ -71,7 +71,7 @@ export default function ServiceDropdown({Services, selectedServices, setSelected
                                     {service.services.map((service, index) => {
                                         return (
                                             <div key={index} className="flex items-center">
-                                                <p className={`${selectedServices.includes(service.code) ? "bg-orange-200" : ""} text-sm p-1 w-[100%] rounded-md m-[1px] cursor-pointer`}
+                                                <p key={index} className={`${selectedServices.includes(service.code) ? "bg-orange-200" : ""} text-sm p-1 w-[100%] rounded-md m-[1px] cursor-pointer`}
                                                     onClick={() => { AddRemoveServiceCode(service.code) }}
                                                     id={service.code}>{service.name}</p>
                                             </div>

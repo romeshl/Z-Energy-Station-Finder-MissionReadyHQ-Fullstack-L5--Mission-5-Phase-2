@@ -28,13 +28,7 @@ export default function ServiceDropdown({ FuelType, selectedFuel, setSelectedFue
         if (selectedFuel.includes(type)) {
             setSelectedFuel(selectedFuel.filter(fuel => fuel !== type));
         } else {
-            if (selectedFuel.length < 2) {
                 setSelectedFuel([...selectedFuel, type]);
-            } else {
-                setSelectedFuel([]);
-                setIsOpen(false);
-            }
-            
         }
     }
 
@@ -51,7 +45,7 @@ export default function ServiceDropdown({ FuelType, selectedFuel, setSelectedFue
                             selectedFuel.includes(type) &&
                             <div className="text-xs border m-1 p-1 border-orange-900 rounded-md bg-orange-200 flex items-center gap-1 "
                                 key={index}><p>{type}</p>
-                                <button className="font-extrabold" onClick={() => { AddRemoveFuelType(type) }}>x</button>
+                                <button key={index} className="font-extrabold" onClick={() => { AddRemoveFuelType(type) }}>x</button>
                             </div>
                         )
 
@@ -72,7 +66,7 @@ export default function ServiceDropdown({ FuelType, selectedFuel, setSelectedFue
                                 return (<>
 
                                     <div key={index} className="flex items-center">
-                                        <p className={`${selectedFuel.includes(type) ? "bg-orange-200" : ""} text-sm p-1 w-[100%] rounded-md m-[1px] cursor-pointer`}
+                                        <p key={index} className={`${selectedFuel.includes(type) ? "bg-orange-200" : ""} text-sm p-1 w-[100%] rounded-md m-[1px] cursor-pointer`}
                                             onClick={() => { AddRemoveFuelType(type) }}
                                         >{type}</p>
                                     </div>

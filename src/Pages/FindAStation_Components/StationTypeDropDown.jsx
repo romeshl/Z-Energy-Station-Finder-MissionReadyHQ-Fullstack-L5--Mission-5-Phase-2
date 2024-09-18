@@ -45,7 +45,7 @@ export default function ServiceDropdown({ StationType, selectedStation, setSelec
                             selectedStation.includes(type) &&
                             <div className="text-xs border m-1 p-1 border-orange-900 rounded-md bg-orange-200 flex items-center gap-1 "
                                 key={index}><p>{type}</p>
-                                <button className="font-extrabold" onClick={() => { AddRemoveStationType(type) }}>x</button>
+                                    <button key={index} className="font-extrabold" onClick={() => { AddRemoveStationType(type) }}>x</button>
                             </div>
                         )
 
@@ -66,7 +66,7 @@ export default function ServiceDropdown({ StationType, selectedStation, setSelec
                                 return (<>
 
                                     <div key={index} className="flex items-center">
-                                        <p className={`${selectedStation.includes(type) ? "bg-orange-200" : ""} text-sm p-1 w-[100%] rounded-md m-[1px] cursor-pointer`}
+                                        <p key={index} className={`${selectedStation.includes(type) ? "bg-orange-200" : ""} text-sm p-1 w-[100%] rounded-md m-[1px] cursor-pointer`}
                                             onClick={() => { AddRemoveStationType(type) }}
                                         >{type}</p>
                                     </div>

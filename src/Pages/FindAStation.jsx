@@ -5,6 +5,7 @@ import { useState } from "react";
 
 import Search from "./FindAStation_Components/Search.jsx";
 import Filters from "./FindAStation_Components/Filters.jsx";
+import StationCard from "./FindAStation_Components/StationCard.jsx";
 
 const StationType = ["Truck stop", "Service station"];
 const FuelType = ["ZX Premium", "Z91 Unleaded", "Z Diesel"];
@@ -21,33 +22,21 @@ export default function FindAStation() {
     }
 
     const filteredBySearch = Stations.filter((station) => {
-        if (searchText === "") return true;
-        return station.name.toLowerCase().includes(searchText.toLowerCase()) ||
-            station.address.toLowerCase().includes(searchText.toLowerCase()) ||
-            station.suburb.toLowerCase().includes(searchText.toLowerCase()) ||
-            station.city.toLowerCase().includes(searchText.toLowerCase()) ||
-            station.postcode.includes === parseInt(searchText) ||
-            station.region.toLowerCase().includes(searchText.toLowerCase());
+        if (!searchText) return true;
+        const lowerCasedSearchText = searchText.toLowerCase();
+        const textFound = [
+            station.name?.toLowerCase().includes(lowerCasedSearchText),
+            station.address?.toLowerCase().includes(lowerCasedSearchText),
+            station.suburb?.toLowerCase().includes(lowerCasedSearchText),
+            station.city?.toLowerCase().includes(lowerCasedSearchText),
+            station.region?.toLowerCase().includes(lowerCasedSearchText),
+            station.postcode === parseInt(searchText)
+        ].some(Boolean);  // Checks if any condition is true
+        return textFound;
     });
 
-    function handleSearch() {
-        if (searchText === "") return Stations;
 
-        const lowerCaseSearch = searchText.toLowerCase();
-
-        const filteredBySearch = Stations.filter((station) => {
-            return (
-                (station.name && station.name.toLowerCase().includes(lowerCaseSearch)) 
-
-            );
-        });
-
-        return filteredBySearch;
-    }
-
-
-
-    const filteredByFuelType = Stations.filter((station) => {
+    const filteredByFuelType = filteredBySearch.filter((station) => {
         if (selectedFuel.length === 0) return true;
         return selectedFuel.every(item => station.fuels.map(fuel => fuel.name).includes(item));
 
@@ -70,15 +59,22 @@ export default function FindAStation() {
             <Filters Services={Services} selectedServices={selectedServices} setSelectedServices={setSelectedServices}
                 StationType={StationType} selectedStation={selectedStation} setSelectedStation={setSelectedStation}
                 FuelType={FuelType} selectedFuel={selectedFuel} setSelectedFuel={setSelectedFuel} />
-            <p>{filteredStations.length}</p>
-            {filteredStations.map((station, index) => {
-                return (
-                    <div key={index} className="flex flex-row gap-5 p-5">
-                        <p>{station.name}</p>
-                    </div>
-                );
-                
-            })}
+            
+            <div className="max-w-[1200px] mx-auto grid grid-cols-[40%,_59%] justify-between">
+                <div className="max-h-lvh border overflow-y-auto [scrollbar-color:darkorange_white]">
+                    <p>{filteredStations.length}</p>
+                    {filteredStations.map((station, index) => {
+                        return (
+                            <StationCard station={station} key={index} />
+                        );
+
+                    })}
+                </div>
+                <div className="border">
+                    This is the space for the map.
+                </div>
+            </div>
+            
         </>
     );
 }
