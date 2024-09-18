@@ -32,14 +32,13 @@ export default function ServiceDropdown({Services, selectedServices, setSelected
         }
     }
 
-    console.log(selectedServices);
     return (
         <div className="flex-row w-[320px] font-intra select-none border-2 border-gray-200 rounded-md p-2
             focus:border-orange-500" ref={divRef}
             tabIndex={uuid4().toString()}>
             <div className="flex items-center " >
                 <div className="flex  flex-wrap items-center w-[350px]"  >
-                    {selectedServices.length === 0 ? <p className="">Services</p> : null}
+                    {selectedServices.length === 0 ? <p className="text-md">Select a service or services</p> : null}
                     {Services.map((service, index) => {
                         return (<>
                             {service.services.map((service, index) => {
@@ -63,7 +62,7 @@ export default function ServiceDropdown({Services, selectedServices, setSelected
                 {isOpen && (
                     <div className="absolute left-0 top-0 w-[300px] bg-white border border-gray-300 rounded-md shadow-lg rounded-lg"
                     >
-                        <button className="border mx-auto w-[100%] font-bold text-gray-600" onClick={() => { setSelectedServices([]); }}>Clear All</button>
+                        <button className="border mx-auto w-[100%] font-bold text-gray-600" onClick={() => { setSelectedServices([]); setIsOpen(false); }}>Clear All</button>
                         <div className="p-2 flex-row">
                             {Services.map((service, index) => {
                                 return (<>
