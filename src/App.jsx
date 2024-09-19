@@ -1,5 +1,4 @@
 // src/App.jsx
-import React from 'react';
 import { Routes, Route} from 'react-router-dom';
 
 // Imports Nav, Footer, Hom and FindAStation components
