@@ -6,6 +6,7 @@ import { useState } from "react";
 import Search from "./FindAStation_Components/Search.jsx";
 import Filters from "./FindAStation_Components/Filters.jsx";
 import StationCard from "./FindAStation_Components/StationCard.jsx";
+import StationsMap from "./FindAStation_Components/StationsMap.jsx";
 
 const StationType = ["Truck stop", "Service station"];
 const FuelType = ["ZX Premium", "Z91 Unleaded", "Z Diesel"];
@@ -69,9 +70,9 @@ export default function FindAStation() {
                 StationType={StationType} selectedStation={selectedStation} setSelectedStation={setSelectedStation}
                 FuelType={FuelType} selectedFuel={selectedFuel} setSelectedFuel={setSelectedFuel} />
 
-            <div className="max-w-[1200px] mx-auto grid grid-cols-[40%,_59%] justify-between">
-                <div className="max-h-lvh border overflow-y-auto [scrollbar-color:darkorange_white]">
-                    <p>{filteredStations.length}</p>
+            <div className="max-w-[1200px] mx-auto grid grid-cols-[40%,_59%] justify-between h-lvh">
+                <div className="max-h-lvh overflow-y-auto [scrollbar-color:darkorange_white]">
+                    <p className="text-center text-sm font-bold text-blue-900">{`Number of results: ${filteredStations.length}`}</p>
                     {filteredStations.map((station, index) => {
                         return (
                             <StationCard station={station} key={index} />
@@ -79,8 +80,8 @@ export default function FindAStation() {
 
                     })}
                 </div>
-                <div className="border">
-                    This is the space for the map.
+                <div className="border z-0">
+                    <StationsMap />
                 </div>
             </div>
 

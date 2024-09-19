@@ -29,7 +29,7 @@ export default function StationCard({ station }) {
     };
     return (
         <>
-            <div className="flex flex-col gap-2 bg-white border rounded-md shadow-md p-5 font-inter">
+            <div className="flex flex-col gap-2 bg-white shadow-md p-2 py-5 font-inter border-b-2">
                 <div className="flex flex-col gap-1">
                     <h1 className="text-xl font-bold text-blue-950">{station.name}</h1>
                     <p className="text-gray-700 font-bold text-sm">{station.address}</p>
@@ -66,19 +66,15 @@ export default function StationCard({ station }) {
                         )}
 
                     </div>}
-
-
                 <div className="flex gap-2">
-
                     <div className="flex flex-col gap-2">
                         <p className="text-sm font-bold">Fuel Prices:</p>
                         <div className="flex gap-2">
                             {station.fuels.map((fuel, index) => (
-                                <div key={index} className="flex flex-col gap-1 font-bold items-center border p-1 rounded-md bg-orange-100 border-orange-200">
-                                    <p className={`text-xs  ${getFuelColor(fuel.name)}`}>{fuel.name}</p>
-                                    <p className={`text-sm ${getFuelColor(fuel.name)}`}>{`$${fuel.price.toFixed(2)}`}</p>
+                                <div key={index} className="flex flex-col gap-1 font-bold items-center border p-1 shadow-md rounded-md bg-orange-100 border-orange-200">
+                                    <p key={index+2} className="text-xs  text-black">{fuel.name}</p>
+                                    <p  key={index+3} className={`text-sm ${getFuelColor(fuel.name)}`}>{`$${fuel.price.toFixed(2)}`}</p>
                                 </div>
-  
                             ))}
                         </div>
                     </div>

@@ -1,83 +1,91 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-import { v4 as uuid4 } from 'uuid';
-
 export default function ServiceDropdown({ FuelType, selectedFuel, setSelectedFuel }) {
     const [isOpen, setIsOpen] = useState(false);
-
     const divRef = useRef(null);
 
-    const toggleDropdown = () => setIsOpen(!isOpen);
+    const toggleDropdown = () => setIsOpen(prev => !prev);
 
-
-    // Handle click outside the div
     useEffect(() => {
-        function handleClickOutside(event) {
+        const handleClickOutside = (event) => {
             if (divRef.current && !divRef.current.contains(event.target)) {
-                setIsOpen(false); // Lost focus
+                setIsOpen(false);
             }
-        }
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => {
-            document.removeEventListener('mousedown', handleClickOutside);
         };
-    }, [divRef]);
 
-    function AddRemoveFuelType(type) {
-        if (selectedFuel.includes(type)) {
-            setSelectedFuel(selectedFuel.filter(fuel => fuel !== type));
-        } else {
-                setSelectedFuel([...selectedFuel, type]);
-        }
-    }
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
+
+    const toggleFuelTypeSelection = (type) => {
+        setSelectedFuel((prevSelected) =>
+            prevSelected.includes(type)
+                ? prevSelected.filter(fuel => fuel !== type)
+                : [...prevSelected, type]
+        );
+    };
 
     return (
-        <div className="flex-row w-[200px] font-intra select-none border-2 border-gray-200 rounded-md p-2
-            focus:border-orange-500" ref={divRef}
-            tabIndex={uuid4().toString()}>
-            <div className="flex items-center " >
-                <div className="flex  flex-wrap items-center w-[350px]"  >
-                    {selectedFuel.length === 0 ? <p className="text-md">Select fuel type</p> : null}
-                    {FuelType.map((type, index) => {
-
-                        return (
-                            selectedFuel.includes(type) &&
-                            <div className="text-xs border m-1 p-1 border-orange-900 rounded-md bg-orange-200 flex items-center gap-1 "
-                                key={index}><p>{type}</p>
-                                <button key={index} className="font-extrabold" onClick={() => { AddRemoveFuelType(type) }}>x</button>
-                            </div>
-                        )
-
-                    })}
-
+        <div
+            className="flex flex-col w-[200px] font-intra select-none border-2 border-gray-200 rounded-md p-2 focus:border-orange-500"
+            ref={divRef}
+            tabIndex={0}
+        >
+            <div className="flex items-center">
+                <div className="flex flex-wrap items-center w-[350px]">
+                    {selectedFuel.length === 0 && (
+                        <p className="text-md">Select fuel type</p>
+                    )}
+                    {selectedFuel.map((type) => (
+                        <div
+                            className="text-xs border m-1 p-1 border-orange-900 rounded-md bg-orange-200 flex items-center gap-1"
+                            key={type} // Use `type` as the key assuming it's unique
+                        >
+                            <p>{type}</p>
+                            <button
+                                className="font-extrabold"
+                                onClick={() => toggleFuelTypeSelection(type)}
+                            >
+                                x
+                            </button>
+                        </div>
+                    ))}
                 </div>
                 <ExpandMoreIcon className="cursor-pointer" onClick={toggleDropdown} />
             </div>
-            <div className="relative text-left">
-                {isOpen && (
-                    <div className="absolute left-0 top-0 w-[180px] bg-white border border-gray-300 rounded-md shadow-lg rounded-lg"
-                    >
-                        <button className="border mx-auto w-[100%] font-bold text-gray-600" onClick={() => { setSelectedFuel([]); setIsOpen(false); }}>Clear All</button>
-                        <div className="p-2 flex-row">
-                            <p className="bg-orange-500  text-sm font-bold text-white rounded-md p-1 ">Station type</p>
+            {isOpen && (
+                <div className="relative text-left z-10">
+                    <div className="absolute left-0 top-0 w-[180px] bg-white border border-gray-300 rounded-md shadow-lg">
+                        <button
+                            className="border mx-auto w-full font-bold text-gray-600"
+                            onClick={() => {
+                                setSelectedFuel([]);
+                                setIsOpen(false);
+                            }}
+                        >
+                            Clear All
+                        </button>
+                        <div className="p-2 flex flex-col">
+                            <p className="bg-orange-500 text-sm font-bold text-white rounded-md p-1">
+                                Station type
+                            </p>
                             <hr />
-                            {FuelType.map((type, index) => {
-                                return (<>
-
-                                    <div key={index} className="flex items-center">
-                                        <p key={index} className={`${selectedFuel.includes(type) ? "bg-orange-200" : ""} text-sm p-1 w-[100%] rounded-md m-[1px] cursor-pointer`}
-                                            onClick={() => { AddRemoveFuelType(type) }}
-                                        >{type}</p>
-                                    </div>
-
-                                </>)
-                            })}
+                            {FuelType.map((type) => (
+                                <div key={type} className="flex items-center">
+                                    <p
+                                        className={`${selectedFuel.includes(type) ? "bg-orange-200" : ""
+                                            } text-sm p-1 w-full rounded-md m-1 cursor-pointer`}
+                                        onClick={() => toggleFuelTypeSelection(type)}
+                                    >
+                                        {type}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
-
                     </div>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 }

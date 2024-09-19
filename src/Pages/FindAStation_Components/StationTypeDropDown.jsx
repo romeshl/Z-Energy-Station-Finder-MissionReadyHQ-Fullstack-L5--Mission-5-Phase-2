@@ -54,7 +54,7 @@ export default function ServiceDropdown({ StationType, selectedStation, setSelec
                 </div>
                 <ExpandMoreIcon className="cursor-pointer" onClick={toggleDropdown} />
             </div>
-            <div className="relative text-left">
+            <div className="relative text-left z-10">
                 {isOpen && (
                     <div className="absolute left-0 top-0 w-[180px] bg-white border border-gray-300 rounded-md shadow-lg rounded-lg"
                     >

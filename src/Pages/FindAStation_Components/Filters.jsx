@@ -1,4 +1,4 @@
-import ServiceDropdown from "./ServicesDropDown";
+import ServicesDropdown from "./ServicesDropDown";
 import StationTypeDropDown from "./StationTypeDropDown";
 import FuelTypeDropDown from "./FuelTypeDropDown";
 
@@ -11,7 +11,7 @@ export default function Filters({ Services, selectedServices, setSelectedService
         <div className="max-w-[1200px] min-w-[375px] mx-auto p-5 font-inter flex flex-wrap gap-5 items-start justify-evenly">
             <div className="flex-row gap-4 ">
                 <h1 className="text-md font-bold pl-2 text-gray-600">Services</h1>
-                <ServiceDropdown Services={Services} selectedServices={selectedServices} setSelectedServices={setSelectedServices} />
+                <ServicesDropdown Services={Services} selectedServices={selectedServices} setSelectedServices={setSelectedServices} />
                 
             </div>
             <div className="flex-row gap-4 ">
