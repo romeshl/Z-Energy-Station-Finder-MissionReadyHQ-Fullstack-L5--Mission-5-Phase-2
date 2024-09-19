@@ -68,7 +68,8 @@ export default function FindAStation() {
             position: {
                 lat: parseFloat(station.latitude),
                 lng: parseFloat(station.longitude)
-            }
+            },
+            showInfo: false
         };
     });
 
