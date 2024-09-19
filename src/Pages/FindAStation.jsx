@@ -47,19 +47,28 @@ export default function FindAStation() {
         return station.type === selectedStation[0];
     });
 
-    const filteredStations = filteredByStationType.filter((station) => {
+    const filteredByServices = filteredByStationType.filter((station) => {
         return selectedServices.every(item => station.services.map(service => service.code).includes(item));
     });
 
+    const filteredStations = filteredByServices.map((station) => {
+        station.fuels.map((fuel) => {
+            if (fuel.name === "ZX Premium") fuel.price = (Math.floor(Math.random() * 30) + 270) / 100;
+            if (fuel.name === "Z91 Unleaded") fuel.price = (Math.floor(Math.random() * 20) + 180) / 100;
+            if (fuel.name === "Z Diesel") fuel.price = (Math.floor(Math.random() * 20) + 180) / 100;
+            return fuel;
+        });
+        return station;
+    });
 
-    //console.log(filteredStations);
+
     return (
         <>
             <Search handleChange={handleSearchTextChange} />
             <Filters Services={Services} selectedServices={selectedServices} setSelectedServices={setSelectedServices}
                 StationType={StationType} selectedStation={selectedStation} setSelectedStation={setSelectedStation}
                 FuelType={FuelType} selectedFuel={selectedFuel} setSelectedFuel={setSelectedFuel} />
-            
+
             <div className="max-w-[1200px] mx-auto grid grid-cols-[40%,_59%] justify-between">
                 <div className="max-h-lvh border overflow-y-auto [scrollbar-color:darkorange_white]">
                     <p>{filteredStations.length}</p>
@@ -74,7 +83,7 @@ export default function FindAStation() {
                     This is the space for the map.
                 </div>
             </div>
-            
+
         </>
     );
 }
