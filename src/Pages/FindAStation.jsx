@@ -62,6 +62,17 @@ export default function FindAStation() {
         return station;
     });
 
+    const mapCoordinates = filteredStations.map((station) => {
+        return {
+            name: station.name,
+            position: {
+                lat: parseFloat(station.latitude),
+                lng: parseFloat(station.longitude)
+            }
+        };
+    });
+
+
 
     return (
         <>
@@ -81,7 +92,7 @@ export default function FindAStation() {
                     })}
                 </div>
                 <div className="border z-0">
-                    <StationsMap />
+                    <StationsMap mapCoordinates={mapCoordinates} />
                 </div>
             </div>
 
