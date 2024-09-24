@@ -1,28 +1,48 @@
 import { Stations } from "../Data/stations.js";
-import { Services } from "../Data/Services.js";
 
 import { useState, useEffect } from "react";
+import { atom, useAtom } from "jotai";
 
 import Search from "./FindAStation_Components/Search.jsx";
 import Filters from "./FindAStation_Components/Filters.jsx";
 import StationCard from "./FindAStation_Components/StationCard.jsx";
 import StationsMap from "./FindAStation_Components/StationsMap.jsx";
 
-const StationType = ["Truck stop", "Service station"];
-const FuelType = ["ZX Premium", "Z91 Unleaded", "Z Diesel"];
+export const StationTypeAtom = atom(["Truck stop", "Service station"]);
+export const FuelTypeAtom = atom(["ZX Premium", "Z91 Unleaded", "Z Diesel"]);
+
+export const initialMapBoundsAtom = atom({
+    "east": 178.02113183974,
+    "north": -34.996045297372,
+    "south": -46.405035754647,
+    "west": 168.32991591529
+})
+
+export const searchTextAtom = atom("");
+export const selectedServicesAtom = atom([]);
+export const selectedStationAtom = atom([]);
+export const selectedFuelAtom = atom([]);
+export const currentMapBoundsAtom = atom({});
 
 // Find Station page component
 export default function FindAStation() {
-    const [searchText, setSearchText] = useState("");
-    const [selectedServices, setSelectedServices] = useState([]);
-    const [selectedStation, setSelectedStation] = useState([]);
-    const [selectedFuel, setSelectedFuel] = useState([]);
-    const [currentMapBounds, setCurrentMapBounds] = useState({
-        "east": 178.02113183974,
-        "north": -34.996045297372,
-        "south": -46.405035754647,
-        "west": 168.32991591529
-    });
+    const [searchText, setSearchText] = useAtom(searchTextAtom);
+    const [selectedServices, setSelectedServices] = useAtom(selectedServicesAtom);
+    const [selectedStation, setSelectedStation] = useAtom(selectedStationAtom);
+    const [selectedFuel, setSelectedFuel] = useAtom(selectedFuelAtom);
+    const [currentMapBounds, setCurrentMapBounds] = useAtom(currentMapBoundsAtom);
+
+    // function resetFilters() {
+    //     setSearchText("");
+    //     setSelectedServices([]);
+    //     setSelectedStation([]);
+    //     setSelectedFuel([]);
+    //     setCurrentMapBounds(initialMapBounds);
+    // }
+
+    useEffect(() => {
+        setCurrentMapBounds(initialMapBoundsAtom);
+    }, []);
 
     const filteredByMapBounds = Stations.filter((station) => {
         return (station.latitude <= currentMapBounds.north && station.latitude >= currentMapBounds.south) &&
@@ -82,12 +102,15 @@ export default function FindAStation() {
         };
     });
 
+    navigator.geolocation.getCurrentPosition((position) => {
+        console.log("Latitude is :", position.coords.latitude);
+        console.log("Longitude is :", position.coords.longitude);
+    });
+
     return (
         <>
-            <Search passSearchText={setSearchText} />
-            <Filters Services={Services} selectedServices={selectedServices} setSelectedServices={setSelectedServices}
-                StationType={StationType} selectedStation={selectedStation} setSelectedStation={setSelectedStation}
-                FuelType={FuelType} selectedFuel={selectedFuel} setSelectedFuel={setSelectedFuel} />
+            <Search />
+            <Filters/>
 
             <div className="max-w-[1150px] mx-auto grid grid-cols-[40%,_59%] justify-between [height:_90vh]">
                 <div className="max-h-lvh overflow-y-auto [scrollbar-color:darkorange_white]">
@@ -100,7 +123,7 @@ export default function FindAStation() {
                     })}
                 </div>
                 <div className="border z-0">
-                    <StationsMap mapCoordinates={mapCoordinates}  setMapBounds={setCurrentMapBounds} />
+                    <StationsMap mapCoordinates={mapCoordinates} />
                 </div>
             </div>
 

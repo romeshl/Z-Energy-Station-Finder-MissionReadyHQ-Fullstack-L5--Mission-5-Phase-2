@@ -3,7 +3,13 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { v4 as uuid4 } from 'uuid';
 
-export default function ServiceDropdown({ StationType, selectedStation, setSelectedStation }) {
+import { useAtom } from "jotai";
+import { StationTypeAtom, selectedStationAtom } from "../FindAStation";
+
+export default function ServiceDropdown() {
+    const [StationType] = useAtom(StationTypeAtom);
+    const [selectedStation, setSelectedStation] = useAtom(selectedStationAtom);
+    
     const [isOpen, setIsOpen] = useState(false);
 
     const divRef = useRef(null);

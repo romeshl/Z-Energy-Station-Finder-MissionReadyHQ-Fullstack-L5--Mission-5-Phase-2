@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function ServicesDropdown({ Services, selectedServices, setSelectedServices }) {
+import { Services } from "../../Data/Services";
+
+import { useAtom } from "jotai";
+import { selectedServicesAtom } from "../FindAStation";
+
+export default function ServicesDropdown() {
+    const [selectedServices, setSelectedServices] = useAtom(selectedServicesAtom);
+    
     const [isOpen, setIsOpen] = useState(false);
     const divRef = useRef(null);
 
@@ -51,7 +58,7 @@ export default function ServicesDropdown({ Services, selectedServices, setSelect
             </div>
             <div className="relative text-left z-10">
                 {isOpen && (
-                    <div className="absolute left-0 top-0 w-[300px] bg-white border border-gray-300 rounded-md shadow-lg">
+                    <div className="absolute left-0 top-0 w-[300px] bg-white border border-gray-300 rounded-md shadow-lg h-[300px] overflow-y-auto">
                         <button className="border mx-auto w-[100%] font-bold text-gray-600"
                             onClick={() => { setSelectedServices([]); setIsOpen(false); }}>Clear All</button>
                         <div className="p-2 flex-row">

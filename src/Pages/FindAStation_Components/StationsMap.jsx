@@ -1,29 +1,40 @@
 import React, { useState, useEffect } from 'react';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, useMap } from '@vis.gl/react-google-maps';
 
-const StationsMap = ({ mapCoordinates, setMapBounds }) => {
+import { useAtom } from "jotai";
+
+import { currentMapBoundsAtom } from "../FindAStation";
+
+const StationsMap = ({ mapCoordinates }) => {
+
+
+
+    useEffect(() => {
+        console.log("Rerendering StationsMap");
+    });
 
     return (
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-            <ZMap mapCoordinates={mapCoordinates} setMapBounds={setMapBounds} />
+            <ZMap mapCoordinates={mapCoordinates}  />
         </APIProvider>
     );
 }
 
-const ZMap = ({ mapCoordinates, setMapBounds }) => {
+const ZMap = ({ mapCoordinates }) => {
+    const [, setMapBounds] = useAtom(currentMapBoundsAtom);
+    
     const myMap = useMap();
 
     return (
         <Map
-
-            style={{ width: '100%', height: '100%' }}
+            className="w-full h-full "
             defaultBounds={{
                 "east": 178.02113183974,
                 "north": -34.996045297372,
                 "south": -46.405035754647,
                 "west": 168.32991591529
             }}
-
+            
             defaultZoom={15}
             minZoom={6}
             gestureHandling={'greedy'}

@@ -3,11 +3,15 @@ import SearchIcon from '@mui/icons-material/Search';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import { useRef } from 'react';
 
-export default function Search({ passSearchText }) {
+import { useAtom } from "jotai";
+import { searchTextAtom } from "../FindAStation";
+
+export default function Search() {
+    const [,setSearchTextAtom] = useAtom(searchTextAtom);
+    
     const [searchText, setSearchText] = useState("");
     const searchRef = useRef(null);
 
-    console.log(searchText);
     return (
         <div className="max-w-[1200px] min-w-[375px] h-[200px] mx-auto bg-gradient-to-r from-orange-500 to-yellow-400 py-11 pl-10
             md:h-[250px]">
@@ -22,7 +26,7 @@ export default function Search({ passSearchText }) {
                     className="w-[100%] outline-none pl-2"
                     onFocus={() => { if (searchRef) { searchRef.current.select() } }}
                     onChange={(e) => { setSearchText(e.target?.value.trim()) }}
-                    onKeyDown={(e) => { if (e.key === 'Enter') passSearchText(searchText) }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') setSearchTextAtom(searchText) }}
                     />
                 <button className="w-[50px]"
                     onClick={() => passSearchText(searchText)}>

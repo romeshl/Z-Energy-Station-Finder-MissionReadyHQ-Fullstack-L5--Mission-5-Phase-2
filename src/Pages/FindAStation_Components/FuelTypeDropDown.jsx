@@ -1,7 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
-export default function ServiceDropdown({ FuelType, selectedFuel, setSelectedFuel }) {
+import { atom, useAtom } from "jotai";
+import { FuelTypeAtom, selectedFuelAtom } from "../FindAStation";
+
+export default function ServiceDropdown() {
+    const [FuelType] = useAtom(FuelTypeAtom);
+    const [selectedFuel, setSelectedFuel] = useAtom(selectedFuelAtom);
+    
     const [isOpen, setIsOpen] = useState(false);
     const divRef = useRef(null);
 
