@@ -89,7 +89,7 @@ export default function FindAStation() {
                 StationType={StationType} selectedStation={selectedStation} setSelectedStation={setSelectedStation}
                 FuelType={FuelType} selectedFuel={selectedFuel} setSelectedFuel={setSelectedFuel} />
 
-            <div className="max-w-[1200px] mx-auto grid grid-cols-[40%,_59%] justify-between h-lvh">
+            <div className="max-w-[1150px] mx-auto grid grid-cols-[40%,_59%] justify-between [height:_90vh]">
                 <div className="max-h-lvh overflow-y-auto [scrollbar-color:darkorange_white]">
                     <p className="text-center text-sm font-bold text-blue-900">{`Number of results: ${filteredStations.length}`}</p>
                     {filteredStations.map((station, index) => {

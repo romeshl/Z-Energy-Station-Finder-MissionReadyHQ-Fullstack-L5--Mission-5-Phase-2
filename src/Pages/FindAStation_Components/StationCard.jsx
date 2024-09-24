@@ -29,7 +29,8 @@ export default function StationCard({ station }) {
     };
     return (
         <>
-            <div className="flex flex-col gap-2 bg-white shadow-md p-2 py-5 font-inter border-b-2">
+            <div className={`select-none flex flex-col gap-2 shadow-md p-2 py-5 font-inter border-b-2 ${station.type === "Service station" ? "bg-white" : "bg-orange-50"}`}>
+
                 <div className="flex flex-col gap-1">
                     <h1 className="text-xl font-bold text-blue-950">{station.name}</h1>
                     <p className="text-gray-700 font-bold text-sm">{station.address}</p>
