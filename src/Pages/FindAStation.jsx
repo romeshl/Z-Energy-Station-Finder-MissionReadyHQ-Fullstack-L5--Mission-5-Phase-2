@@ -1,7 +1,7 @@
 import { Stations } from "../Data/stations.js";
 import { Services } from "../Data/Services.js";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 import Search from "./FindAStation_Components/Search.jsx";
 import Filters from "./FindAStation_Components/Filters.jsx";
@@ -17,12 +17,19 @@ export default function FindAStation() {
     const [selectedServices, setSelectedServices] = useState([]);
     const [selectedStation, setSelectedStation] = useState([]);
     const [selectedFuel, setSelectedFuel] = useState([]);
+    const [currentMapBounds, setCurrentMapBounds] = useState({
+        "east": 178.02113183974,
+        "north": -34.996045297372,
+        "south": -46.405035754647,
+        "west": 168.32991591529
+    });
 
-    function handleSearchTextChange(e) {
-        setSearchText(e.target.value);
-    }
+    const filteredByMapBounds = Stations.filter((station) => {
+        return (station.latitude <= currentMapBounds.north && station.latitude >= currentMapBounds.south) &&
+            (station.longitude <= currentMapBounds.east && station.longitude >= currentMapBounds.west);
+    });
 
-    const filteredBySearch = Stations.filter((station) => {
+    const filteredBySearch = filteredByMapBounds.filter((station) => {
         if (!searchText) return true;
         const lowerCasedSearchText = searchText.toLowerCase();
         const textFound = [
@@ -62,6 +69,8 @@ export default function FindAStation() {
         return station;
     });
 
+
+
     const mapCoordinates = filteredStations.map((station) => {
         return {
             name: station.name,
@@ -73,11 +82,9 @@ export default function FindAStation() {
         };
     });
 
-
-
     return (
         <>
-            <Search handleChange={handleSearchTextChange} />
+            <Search passSearchText={setSearchText} />
             <Filters Services={Services} selectedServices={selectedServices} setSelectedServices={setSelectedServices}
                 StationType={StationType} selectedStation={selectedStation} setSelectedStation={setSelectedStation}
                 FuelType={FuelType} selectedFuel={selectedFuel} setSelectedFuel={setSelectedFuel} />
@@ -93,7 +100,7 @@ export default function FindAStation() {
                     })}
                 </div>
                 <div className="border z-0">
-                    <StationsMap mapCoordinates={mapCoordinates} />
+                    <StationsMap mapCoordinates={mapCoordinates}  setMapBounds={setCurrentMapBounds} />
                 </div>
             </div>
 
