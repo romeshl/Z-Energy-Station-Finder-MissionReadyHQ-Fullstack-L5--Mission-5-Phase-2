@@ -2,8 +2,12 @@ import ServicesDropdown from "./ServicesDropDown";
 import StationTypeDropDown from "./StationTypeDropDown";
 import FuelTypeDropDown from "./FuelTypeDropDown";
 
+import { resetAtom } from "../FindAStation";
+import { useAtom } from "jotai";
 
 export default function Filters() {
+    const [, reset] = useAtom(resetAtom);
+
     return (
         <div className="max-w-[1200px] min-w-[375px] mx-auto p-5 font-inter flex flex-wrap gap-5 items-start justify-evenly">
             <div className="flex-row gap-4 ">
@@ -27,6 +31,7 @@ export default function Filters() {
             </div>
             <div className="flex-row gap-4 mt-5">
             <button className="text-orange-500 rounded-md p-2 w-[100%] underline"
+                onClick={reset}
                 >Clear filters</button>
             </div>
         </div>

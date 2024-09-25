@@ -3,16 +3,9 @@ import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, useMap } from '@vis.
 
 import { useAtom } from "jotai";
 
-import { currentMapBoundsAtom } from "../FindAStation";
+import { currentMapBoundsAtom, initialMapBoundsAtom, MapBoundsByLocationsListAtom } from "../FindAStation";
 
 const StationsMap = ({ mapCoordinates }) => {
-
-
-
-    useEffect(() => {
-        console.log("Rerendering StationsMap");
-    });
-
     return (
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
             <ZMap mapCoordinates={mapCoordinates}  />
@@ -22,37 +15,44 @@ const StationsMap = ({ mapCoordinates }) => {
 
 const ZMap = ({ mapCoordinates }) => {
     const [, setMapBounds] = useAtom(currentMapBoundsAtom);
-    
+    const [initialMapBounds] = useAtom(initialMapBoundsAtom);
+    const [MapBoundsByLocationsList] = useAtom(MapBoundsByLocationsListAtom);
+
     const myMap = useMap();
+
+    useEffect(() => {
+        console.log("Map bounds changed by filter.")
+        if (myMap) {
+            myMap.fitBounds(MapBoundsByLocationsList);
+        }
+     }, [MapBoundsByLocationsList]);
+
+
+
+    function UpdateMapBounds() {
+        if (myMap) {
+            const newMapBounds = {
+                east: myMap.getBounds().getNorthEast().lng() <= 0 ? 179 : myMap.getBounds().getNorthEast().lng(),
+                north: myMap.getBounds().getNorthEast().lat(),
+                south: myMap.getBounds().getSouthWest().lat(),
+                west: myMap.getBounds().getSouthWest().lng()
+            }
+            setMapBounds(newMapBounds);
+        }
+    }
 
     return (
         <Map
             className="w-full h-full "
-            defaultBounds={{
-                "east": 178.02113183974,
-                "north": -34.996045297372,
-                "south": -46.405035754647,
-                "west": 168.32991591529
-            }}
-            
+            defaultBounds={initialMapBounds}
             defaultZoom={15}
             minZoom={6}
             gestureHandling={'greedy'}
             disableDefaultUI={true}
             mapId={import.meta.env.VITE_MAP_ID}// Apply the custom map style ID
             onClick={() => { alert("Test"); }} // Close InfoWindow on map click
-            onBoundsChanged={() => {
-                if (myMap) {
-                    const newMapBounds = {
-                        east: myMap.getBounds().getNorthEast().lng() <= 0 ? 179 : myMap.getBounds().getNorthEast().lng(),
-                        north: myMap.getBounds().getNorthEast().lat(),
-                        south: myMap.getBounds().getSouthWest().lat(),
-                        west: myMap.getBounds().getSouthWest().lng()
-                    }
-
-                    setMapBounds(newMapBounds);
-                }
-            }} // Close InfoWindow on map bounds change
+            onZoomChanged={UpdateMapBounds} // Close InfoWindow on map bounds change
+            onDragend={UpdateMapBounds}
 
         >
             {mapCoordinates.map((station, index) => (

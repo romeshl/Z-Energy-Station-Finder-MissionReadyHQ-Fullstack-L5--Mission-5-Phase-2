@@ -4,12 +4,12 @@ import MyLocationIcon from '@mui/icons-material/MyLocation';
 import { useRef } from 'react';
 
 import { useAtom } from "jotai";
-import { searchTextAtom } from "../FindAStation";
+import { searchTextAtom, LocationTextAtom } from "../FindAStation";
 
 export default function Search() {
-    const [,setSearchTextAtom] = useAtom(searchTextAtom);
+    const [, setSearchTextAtom] = useAtom(searchTextAtom);
     
-    const [searchText, setSearchText] = useState("");
+    const [locationText, setLocationText] =useAtom(LocationTextAtom);
     const searchRef = useRef(null);
 
     return (
@@ -24,12 +24,13 @@ export default function Search() {
                     placeholder='Enter a location or a station'
                     ref={searchRef} type="text"
                     className="w-[100%] outline-none pl-2"
+                    value={locationText}
                     onFocus={() => { if (searchRef) { searchRef.current.select() } }}
-                    onChange={(e) => { setSearchText(e.target?.value.trim()) }}
-                    onKeyDown={(e) => { if (e.key === 'Enter') setSearchTextAtom(searchText) }}
+                    onChange={(e) => { setLocationText(e.target?.value.trim()) }}
+                    onKeyDown={(e) => { if (e.key === 'Enter') setSearchTextAtom(locationText) }}
                     />
                 <button className="w-[50px]"
-                    onClick={() => passSearchText(searchText)}>
+                    onClick={()=> setSearchTextAtom(searchText)}>
                     <SearchIcon />
                 </button>
             </div>

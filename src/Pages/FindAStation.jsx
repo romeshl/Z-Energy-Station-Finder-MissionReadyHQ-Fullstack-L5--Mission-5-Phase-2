@@ -23,25 +23,33 @@ export const selectedServicesAtom = atom([]);
 export const selectedStationAtom = atom([]);
 export const selectedFuelAtom = atom([]);
 export const currentMapBoundsAtom = atom({});
+export const MapBoundsByLocationsListAtom = atom({});
+export const LocationTextAtom = atom("");
+
+export const resetAtom = atom(null, (get, set) => {
+    set(searchTextAtom, "");
+    set(selectedServicesAtom, []);
+    set(selectedStationAtom, []);
+    set(selectedFuelAtom, []);
+    set(currentMapBoundsAtom, get(initialMapBoundsAtom));
+    set(MapBoundsByLocationsListAtom, get(initialMapBoundsAtom));
+    set(LocationTextAtom, "");
+});
+
 
 // Find Station page component
 export default function FindAStation() {
+    const [initialMapBounds] = useAtom(initialMapBoundsAtom);
     const [searchText, setSearchText] = useAtom(searchTextAtom);
     const [selectedServices, setSelectedServices] = useAtom(selectedServicesAtom);
     const [selectedStation, setSelectedStation] = useAtom(selectedStationAtom);
     const [selectedFuel, setSelectedFuel] = useAtom(selectedFuelAtom);
     const [currentMapBounds, setCurrentMapBounds] = useAtom(currentMapBoundsAtom);
-
-    // function resetFilters() {
-    //     setSearchText("");
-    //     setSelectedServices([]);
-    //     setSelectedStation([]);
-    //     setSelectedFuel([]);
-    //     setCurrentMapBounds(initialMapBounds);
-    // }
+    const [, setMapBoundsByLocationsList] = useAtom(MapBoundsByLocationsListAtom);
 
     useEffect(() => {
-        setCurrentMapBounds(initialMapBoundsAtom);
+        setCurrentMapBounds(initialMapBounds);
+        setMapBoundsByLocationsList(initialMapBounds);
     }, []);
 
     const filteredByMapBounds = Stations.filter((station) => {
@@ -89,8 +97,6 @@ export default function FindAStation() {
         return station;
     });
 
-
-
     const mapCoordinates = filteredStations.map((station) => {
         return {
             name: station.name,
@@ -102,10 +108,25 @@ export default function FindAStation() {
         };
     });
 
-    navigator.geolocation.getCurrentPosition((position) => {
-        console.log("Latitude is :", position.coords.latitude);
-        console.log("Longitude is :", position.coords.longitude);
-    });
+    useEffect(() => {
+        if (filteredStations.length === 0) return;
+        const newMapBounds = {
+            east: Math.max(...filteredStations.map(station => station.longitude)),
+            north: Math.max(...filteredStations.map(station => station.latitude)),
+            south: Math.min(...filteredStations.map(station => station.latitude)),
+            west: Math.min(...filteredStations.map(station => station.longitude))
+        }
+        console.log(newMapBounds);
+        setMapBoundsByLocationsList(newMapBounds);
+
+    }, [searchText, selectedServices, selectedStation, selectedFuel]);
+
+
+
+    // navigator.geolocation.getCurrentPosition((position) => {
+    //     console.log("Latitude is :", position.coords.latitude);
+    //     console.log("Longitude is :", position.coords.longitude);
+    // });
 
     return (
         <>
