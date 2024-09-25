@@ -22,9 +22,17 @@ export const searchTextAtom = atom("");
 export const selectedServicesAtom = atom([]);
 export const selectedStationAtom = atom([]);
 export const selectedFuelAtom = atom([]);
-export const currentMapBoundsAtom = atom({});
-export const MapBoundsByLocationsListAtom = atom({});
 export const LocationTextAtom = atom("");
+export const currentLocationAtom = atom({});
+
+export const currentMapBoundsAtom = atom({} );
+
+export const MapBoundsByLocationsListAtom = atom({});
+
+export const clearSearchAtom = atom(null, (get, set) => {
+    set(searchTextAtom, "");
+    set(LocationTextAtom, "");
+});
 
 export const resetAtom = atom(null, (get, set) => {
     set(searchTextAtom, "");
@@ -36,21 +44,35 @@ export const resetAtom = atom(null, (get, set) => {
     set(LocationTextAtom, "");
 });
 
+export const resetMapBoundsAtom = atom(null, (get, set) => {
+    set(currentMapBoundsAtom, get(initialMapBoundsAtom));
+});
 
 // Find Station page component
 export default function FindAStation() {
     const [initialMapBounds] = useAtom(initialMapBoundsAtom);
-    const [searchText, setSearchText] = useAtom(searchTextAtom);
-    const [selectedServices, setSelectedServices] = useAtom(selectedServicesAtom);
-    const [selectedStation, setSelectedStation] = useAtom(selectedStationAtom);
-    const [selectedFuel, setSelectedFuel] = useAtom(selectedFuelAtom);
+    const [searchText] = useAtom(searchTextAtom);
+    const [selectedServices] = useAtom(selectedServicesAtom);
+    const [selectedStation] = useAtom(selectedStationAtom);
+    const [selectedFuel] = useAtom(selectedFuelAtom);
     const [currentMapBounds, setCurrentMapBounds] = useAtom(currentMapBoundsAtom);
     const [, setMapBoundsByLocationsList] = useAtom(MapBoundsByLocationsListAtom);
 
     useEffect(() => {
         setCurrentMapBounds(initialMapBounds);
         setMapBoundsByLocationsList(initialMapBounds);
-    }, []);
+    }, []); 
+
+    useEffect(() => {
+        if (filteredStations.length === 0) return;
+        const newMapBounds = {
+            east: Math.max(...filteredStations.map(station => station.longitude)),
+            north: Math.max(...filteredStations.map(station => station.latitude)),
+            south: Math.min(...filteredStations.map(station => station.latitude)),
+            west: Math.min(...filteredStations.map(station => station.longitude))
+        }
+        setMapBoundsByLocationsList(newMapBounds);
+    }, [searchText, selectedServices, selectedStation, selectedFuel]);
 
     const filteredByMapBounds = Stations.filter((station) => {
         return (station.latitude <= currentMapBounds.north && station.latitude >= currentMapBounds.south) &&
@@ -108,41 +130,31 @@ export default function FindAStation() {
         };
     });
 
-    useEffect(() => {
-        if (filteredStations.length === 0) return;
-        const newMapBounds = {
-            east: Math.max(...filteredStations.map(station => station.longitude)),
-            north: Math.max(...filteredStations.map(station => station.latitude)),
-            south: Math.min(...filteredStations.map(station => station.latitude)),
-            west: Math.min(...filteredStations.map(station => station.longitude))
-        }
-        console.log(newMapBounds);
-        setMapBoundsByLocationsList(newMapBounds);
+    const StationsList = () => {
+        if (searchText) {
+            return `Search results for "${searchText}" - No. of stations: ${filteredStations.length}`;
+        } else
+            return `No. of staions: ${filteredStations.length}`;
+    }
 
-    }, [searchText, selectedServices, selectedStation, selectedFuel]);
-
-
-
-    // navigator.geolocation.getCurrentPosition((position) => {
-    //     console.log("Latitude is :", position.coords.latitude);
-    //     console.log("Longitude is :", position.coords.longitude);
-    // });
 
     return (
         <>
             <Search />
-            <Filters/>
-
-            <div className="max-w-[1150px] mx-auto grid grid-cols-[40%,_59%] justify-between [height:_90vh]">
-                <div className="max-h-lvh overflow-y-auto [scrollbar-color:darkorange_white]">
-                    <p className="text-center text-sm font-bold text-blue-900">{`Number of results: ${filteredStations.length}`}</p>
+            <Filters />
+            <div className="max-w-[1150px] mx-auto grid grid-cols-[40%,_59%] justify-between h-[90vh]">
+                <div className="h-[90vh]">
+                    <p className="text-center text-sm font-bold text-blue-900">{StationsList()}</p>
+                    <div className="p-1 h-[100%] overflow-y-auto [scrollbar-color:darkorange_white]">
                     {filteredStations.map((station, index) => {
                         return (
                             <StationCard station={station} key={index} />
                         );
 
                     })}
+                    </div>
                 </div>
+
                 <div className="border z-0">
                     <StationsMap mapCoordinates={mapCoordinates} />
                 </div>

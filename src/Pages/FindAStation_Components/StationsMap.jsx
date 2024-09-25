@@ -3,12 +3,12 @@ import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, useMap } from '@vis.
 
 import { useAtom } from "jotai";
 
-import { currentMapBoundsAtom, initialMapBoundsAtom, MapBoundsByLocationsListAtom } from "../FindAStation";
+import { currentMapBoundsAtom, initialMapBoundsAtom, MapBoundsByLocationsListAtom, currentLocationAtom } from "../FindAStation";
 
 const StationsMap = ({ mapCoordinates }) => {
     return (
         <APIProvider apiKey={import.meta.env.VITE_GOOGLE_MAPS_API_KEY}>
-            <ZMap mapCoordinates={mapCoordinates}  />
+            <ZMap mapCoordinates={mapCoordinates} />
         </APIProvider>
     );
 }
@@ -17,16 +17,24 @@ const ZMap = ({ mapCoordinates }) => {
     const [, setMapBounds] = useAtom(currentMapBoundsAtom);
     const [initialMapBounds] = useAtom(initialMapBoundsAtom);
     const [MapBoundsByLocationsList] = useAtom(MapBoundsByLocationsListAtom);
+    const [currentLocation] = useAtom(currentLocationAtom);
 
     const myMap = useMap();
 
-    useEffect(() => {
-        console.log("Map bounds changed by filter.")
-        if (myMap) {
-            myMap.fitBounds(MapBoundsByLocationsList);
-        }
-     }, [MapBoundsByLocationsList]);
 
+    useEffect(() => {
+        if (currentLocation && myMap) {
+            myMap.setCenter(currentLocation);
+            myMap.setZoom(14);
+        }
+    }, [currentLocation]);
+    
+    useEffect(() => {
+        if (myMap && (Object.keys(MapBoundsByLocationsList).length > 0)) {
+            myMap.fitBounds(MapBoundsByLocationsList);
+        } else if (myMap)
+            myMap.fitBounds(initialMapBounds);
+    }, [MapBoundsByLocationsList]);
 
 
     function UpdateMapBounds() {
@@ -51,8 +59,9 @@ const ZMap = ({ mapCoordinates }) => {
             disableDefaultUI={true}
             mapId={import.meta.env.VITE_MAP_ID}// Apply the custom map style ID
             onClick={() => { alert("Test"); }} // Close InfoWindow on map click
-            onZoomChanged={UpdateMapBounds} // Close InfoWindow on map bounds change
-            onDragend={UpdateMapBounds}
+            //onZoomChanged={UpdateMapBounds} // Close InfoWindow on map bounds change
+            //onDragend={UpdateMapBounds}
+            onBoundsChanged={UpdateMapBounds}
 
         >
             {mapCoordinates.map((station, index) => (
