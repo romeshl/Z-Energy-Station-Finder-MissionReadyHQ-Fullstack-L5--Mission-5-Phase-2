@@ -1,5 +1,7 @@
 import { Stations } from "../Data/stations.js";
 
+import { v4 as uuidV4 } from "uuid";
+
 import { useState, useEffect } from "react";
 import { atom, useAtom } from "jotai";
 
@@ -25,7 +27,7 @@ export const selectedFuelAtom = atom([]);
 export const LocationTextAtom = atom("");
 export const currentLocationAtom = atom({});
 
-export const currentMapBoundsAtom = atom({} );
+export const currentMapBoundsAtom = atom({});
 
 export const MapBoundsByLocationsListAtom = atom({});
 
@@ -61,7 +63,7 @@ export default function FindAStation() {
     useEffect(() => {
         setCurrentMapBounds(initialMapBounds);
         setMapBoundsByLocationsList(initialMapBounds);
-    }, []); 
+    }, []);
 
     useEffect(() => {
         if (filteredStations.length === 0) return;
@@ -122,11 +124,9 @@ export default function FindAStation() {
     const mapCoordinates = filteredStations.map((station) => {
         return {
             name: station.name,
-            position: {
-                lat: parseFloat(station.latitude),
-                lng: parseFloat(station.longitude)
-            },
-            showInfo: false
+            lat: parseFloat(station.latitude),
+            lng: parseFloat(station.longitude),
+            key: uuidV4()
         };
     });
 
@@ -146,12 +146,12 @@ export default function FindAStation() {
                 <div className="h-[90vh]">
                     <p className="text-center text-sm font-bold text-blue-900">{StationsList()}</p>
                     <div className="p-1 h-[100%] overflow-y-auto [scrollbar-color:darkorange_white]">
-                    {filteredStations.map((station, index) => {
-                        return (
-                            <StationCard station={station} key={index} />
-                        );
+                        {filteredStations.map((station, index) => {
+                            return (
+                                <StationCard station={station} key={index} />
+                            );
 
-                    })}
+                        })}
                     </div>
                 </div>
 

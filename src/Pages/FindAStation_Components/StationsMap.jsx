@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { APIProvider, Map, AdvancedMarker, Pin, InfoWindow, useMap } from '@vis.gl/react-google-maps';
+import { MarkerClusterer } from "@googlemaps/markerclusterer";
+
 
 import { useAtom } from "jotai";
 
@@ -21,21 +23,19 @@ const ZMap = ({ mapCoordinates }) => {
 
     const myMap = useMap();
 
-
     useEffect(() => {
         if (currentLocation && myMap) {
             myMap.setCenter(currentLocation);
             myMap.setZoom(14);
         }
     }, [currentLocation]);
-    
+
     useEffect(() => {
         if (myMap && (Object.keys(MapBoundsByLocationsList).length > 0)) {
             myMap.fitBounds(MapBoundsByLocationsList);
         } else if (myMap)
             myMap.fitBounds(initialMapBounds);
     }, [MapBoundsByLocationsList]);
-
 
     function UpdateMapBounds() {
         if (myMap) {
@@ -62,21 +62,56 @@ const ZMap = ({ mapCoordinates }) => {
             //onZoomChanged={UpdateMapBounds} // Close InfoWindow on map bounds change
             //onDragend={UpdateMapBounds}
             onBoundsChanged={UpdateMapBounds}
-
         >
-            {mapCoordinates.map((station, index) => (
-                <React.Fragment key={index}>
-                    <AdvancedMarker
-                        position={station.position}
-                        title={station.name}
-                        clickable={true}
-                        onClick={() => { null }} // Open InfoWindow on marker click
-                    />
-
-                </React.Fragment>
-            ))}
-
+            <ZMarkers mapCoordinates={mapCoordinates} />
         </Map>)
 }
 
+
+const ZMarkers = ({ mapCoordinates }) => {
+
+    const map = useMap();
+    const [markers, setMarkers] = useState({});
+    const clusterer = useRef(null);
+
+    useEffect(() => {
+        if (!map) return
+        if (!clusterer.current) {
+            clusterer.current = new MarkerClusterer({ map })
+        }
+    }, [map]);
+
+    useEffect(() => {
+        clusterer.current.clearMarkers();
+        clusterer.current?.addMarkers(Object.values(markers));
+    }, [markers])
+
+    const setMarkerRef = (marker, key) => {
+        if (marker && markers[key]) return;
+        if (!marker && !markers[key]) return;
+        setMarkers(prev => {
+            if (marker) {
+                return { ...prev, [key]: marker };
+            } else {
+                const newMarkers = { ...prev };
+                delete newMarkers[key];
+                return newMarkers;
+            }
+        })
+    }
+
+    return (<>
+        {mapCoordinates.map((point) => (
+
+            <AdvancedMarker
+                position={point}
+                title={point.name}
+                key={point.key}
+                ref={ marker => setMarkerRef(marker, point.key)}
+            >
+             </AdvancedMarker>
+        ))}
+
+    </>)
+}
 export default React.memo(StationsMap);
