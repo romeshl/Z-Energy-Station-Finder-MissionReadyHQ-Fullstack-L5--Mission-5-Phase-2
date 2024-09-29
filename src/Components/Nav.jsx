@@ -32,7 +32,9 @@ const Nav = () => {
       <div className="container mx-auto px-4 py-2 flex items-center justify-between max-w-screen-xl" style={{ maxWidth: '1200px' }}>
         <div className="flex items-center ml-4"> {/* Increased left margin */}
           {/* Z Logo */}
+          <Link to="/">
           <img src={logo} alt="Z Logo" className="h-12 w-12 mr-8" /> {/* Increased logo size */}
+          </Link>
           <div className="hidden md:flex space-x-2"> {/* Decreased space between menu options */}
             {/* Products and Services Menu */}
             <div className="relative">
@@ -98,7 +100,9 @@ const Nav = () => {
         </div>
         <div className="flex items-center space-x-4">
           {/* Find A Station Button */}
+          <Link to="/find-a-station">
           <button className="bg-orange-500 text-white px-4 py-2 rounded hover:bg-orange-600 text-sm font-bold">Find A Station</button>
+          </Link>
           {/* Search Bar */}
           <div className="relative">
             <input type="text" placeholder="Search" className="border rounded px-4 py-2 text-sm font-bold" />

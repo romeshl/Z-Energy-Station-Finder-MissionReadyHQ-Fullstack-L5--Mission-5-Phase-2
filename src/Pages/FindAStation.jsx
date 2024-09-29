@@ -11,7 +11,7 @@ export default function FindAStation() {
         <div className="max-w-[1200px] min-w-[375px] h-[200px] mx-auto bg-gradient-to-r from-orange-500 to-yellow-400 p-10 pl-10">
             <h1 className="text-2xl font-Inter font-extrabold text-white mb-2
             sm:text-3xl
-            md:text-4xl">Find a station</h1>
+            md:text-4xl">Find a Station</h1>
             <TextField
                 variant="outlined"
                 slotProps={{
