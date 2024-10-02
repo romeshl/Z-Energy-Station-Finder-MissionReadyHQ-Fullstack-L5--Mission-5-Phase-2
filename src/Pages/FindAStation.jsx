@@ -139,6 +139,7 @@ export default function FindAStation() {
 
 
     return (
+        <>
         <div className="max-w-[1200px] min-w-[375px] h-[200px] mx-auto bg-gradient-to-r from-orange-500 to-yellow-400 p-10 pl-10">
             <h1 className="text-2xl font-Inter font-extrabold text-white mb-2
             sm:text-3xl
@@ -157,7 +158,6 @@ export default function FindAStation() {
                 className="bg-white rounded-lg shadow-md w-[80%]"
             />
         </div>
-        <>
             <Search />
             <Filters />
             <div className="max-w-[1150px] mx-auto grid grid-cols-[40%,_59%] justify-between h-[90vh]">
